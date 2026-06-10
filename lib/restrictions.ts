@@ -89,3 +89,24 @@ export async function reportarPerigo(
   if (error) return { ok: false, error: error.message };
   return { ok: true, restrictionId: data as number };
 }
+
+export type ConfirmResult =
+  | { ok: true; confirmacoes: number; verificada: boolean }
+  | { ok: false; error: string };
+
+/**
+ * Fase 4 (crowdsourcing) — confirma uma restrição pendente reportada por outro
+ * motorista. Idempotente por usuário; com 3+ confirmações vira "verificado".
+ */
+export async function confirmarRestricao(id: number): Promise<ConfirmResult> {
+  if (!isSupabaseConfigured()) return { ok: false, error: "Supabase não configurado." };
+
+  const user = await ensureSession();
+  if (!user) return { ok: false, error: "Não foi possível iniciar a sessão." };
+
+  const { data, error } = await supabase.rpc("confirmar_restricao", { restriction_id: id });
+  if (error) return { ok: false, error: error.message };
+
+  const row = data?.[0];
+  return { ok: true, confirmacoes: row?.confirmacoes ?? 0, verificada: row?.verificada ?? false };
+}

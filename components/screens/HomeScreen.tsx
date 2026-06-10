@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Search, Truck, Pencil, TriangleAlert, CircleCheck } from "lucide-react";
 import { MapView } from "@/components/app/MapView";
 import { StatusBar } from "@/components/app/StatusBar";
-import { ReportButton } from "@/components/ui";
-import { reportarPerigo } from "@/lib/restrictions";
+import { Button, ReportButton } from "@/components/ui";
+import { reportarPerigo, confirmarRestricao } from "@/lib/restrictions";
 import { useTruckNavigation } from "@/lib/hooks/useTruckNavigation";
 import { formatDecimalBR } from "@/lib/truckProfiles";
 import type { ScreenProps } from "@/lib/navigation";
@@ -27,24 +27,47 @@ function fmtDist(m: number): string {
 export function HomeScreen({ go }: ScreenProps) {
   const [toast, setToast] = useState<Toast>(null);
   const [reporting, setReporting] = useState(false);
+  const [confirming, setConfirming] = useState(false);
   const { position, speedKmh, nearby, nearestImpeditive, alturaVeiculo, gpsError } =
     useTruckNavigation();
+
+  const flashToast = (t: Toast) => {
+    setToast(t);
+    window.setTimeout(() => setToast(null), 3200);
+  };
 
   const report = async () => {
     if (reporting) return;
     setReporting(true);
     const result = await reportarPerigo("altura");
     setReporting(false);
-    setToast(
+    flashToast(
       result.ok
         ? { kind: "ok", message: "Perigo reportado. Obrigado!" }
         : { kind: "error", message: result.error }
     );
-    window.setTimeout(() => setToast(null), 3200);
   };
 
   const speedTxt = speedKmh != null ? String(Math.round(speedKmh)) : "--";
   const nearestAny = nearby[0] ?? null;
+  const nearestPending = nearby.find((r) => r.status === "pendente_validacao") ?? null;
+
+  const confirmar = async () => {
+    if (!nearestPending || confirming) return;
+    setConfirming(true);
+    const res = await confirmarRestricao(nearestPending.id);
+    setConfirming(false);
+    flashToast(
+      res.ok
+        ? {
+            kind: "ok",
+            message: res.verificada
+              ? "Perigo verificado pela comunidade. Obrigado!"
+              : "Confirmação registrada. Obrigado!",
+          }
+        : { kind: "error", message: res.error }
+    );
+  };
 
   return (
     <>
@@ -83,10 +106,29 @@ export function HomeScreen({ go }: ScreenProps) {
             {toast.kind === "ok" ? <CircleCheck /> : <TriangleAlert />} {toast.message}
           </div>
         ) : (
-          <div className="panicfloat">
+          <div
+            className={`panicfloat${
+              !nearestImpeditive && nearestPending ? " panicfloat--raised" : ""
+            }`}
+          >
             <ReportButton label={reporting ? "Enviando…" : "Reportar perigo"} onClick={report} />
           </div>
         )}
+
+        {/* Crowdsourcing — confirmar perigo pendente reportado por outro motorista */}
+        {!nearestImpeditive && nearestPending && !toast ? (
+          <div className="confirmbar">
+            <div className="confirmbar__txt">
+              <span className="confirmbar__eyebrow">Perigo reportado aqui?</span>
+              <span className="confirmbar__title">
+                {nearestPending.street_name ?? "Restrição"} · a {fmtDist(nearestPending.distancia_m)}
+              </span>
+            </div>
+            <Button variant="secondary" size="md" onClick={confirmar} disabled={confirming}>
+              {confirming ? "…" : "Confirmar"}
+            </Button>
+          </div>
+        ) : null}
 
         {/* Bottom HUD — real-time */}
         {nearestImpeditive ? (

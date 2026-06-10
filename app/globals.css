@@ -809,7 +809,9 @@ p { margin: 0; text-wrap: pretty; }
 .vcard__editbtn { width: 48px; height: 48px; flex: none; display: grid; place-items: center; border-radius: var(--radius-md); background: var(--graphite-700); color: var(--amber-500); }
 .vcard__editbtn svg { width: 24px; height: 24px; }
 
-.panicfloat { position: absolute; right: 16px; bottom: 196px; z-index: 6; }
+.panicfloat { position: absolute; right: 16px; bottom: 196px; z-index: 6; transition: bottom var(--duration-base) var(--ease-standard); }
+/* Sobe acima do prompt de confirmação para não interceptar o clique nele. */
+.panicfloat--raised { bottom: 304px; }
 
 .hud {
   position: relative; z-index: 4;
@@ -893,3 +895,25 @@ p { margin: 0; text-wrap: pretty; }
 }
 .toast svg { width: 28px; height: 28px; flex: none; }
 .toast--error { background: var(--red-600); }
+
+/* Crowdsourcing confirm prompt (pending restriction nearby) */
+.confirmbar {
+  position: relative; z-index: 5;
+  margin: 0 16px 10px;
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface-card);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-3);
+}
+.confirmbar__txt { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.confirmbar__eyebrow {
+  font: var(--weight-bold) 13px var(--font-display);
+  color: var(--blue-300);
+  text-transform: uppercase; letter-spacing: var(--tracking-caps);
+}
+.confirmbar__title {
+  font: var(--weight-bold) 17px var(--font-body); color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}

@@ -121,6 +121,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      confirmar_restricao: {
+        Args: { restriction_id: number }
+        Returns: { confirmacoes: number; verificada: boolean }[]
+      }
       restricoes_na_rota: {
         Args: {
           rota_geojson: Json
