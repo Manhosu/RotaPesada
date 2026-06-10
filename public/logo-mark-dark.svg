@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Rota Pesada">
+  <defs>
+    <linearGradient id="rmd-road" gradientUnits="userSpaceOnUse" x1="0" y1="58" x2="0" y2="88">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="1"></stop>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.08"></stop>
+    </linearGradient>
+  </defs>
+
+  
+  <rect x="2" y="2" width="92" height="92" rx="22" fill="#16191D"></rect>
+  <rect x="2" y="2" width="92" height="92" rx="22" fill="none" stroke="#3A424E" stroke-width="2"></rect>
+
+  
+  <g fill="url(#rmd-road)">
+    <path d="M39 59 L42 59 L24 87 L17 87 Z"></path>
+    <path d="M54 59 L57 59 L79 87 L72 87 Z"></path>
+    <path d="M47.3 60 L48.7 60 L48.8 64 L47.2 64 Z"></path>
+    <path d="M46.8 68 L49.2 68 L49.5 73.5 L46.5 73.5 Z"></path>
+    <path d="M46 78 L50 78 L50.4 85 L45.6 85 Z"></path>
+  </g>
+
+  
+  <path d="M35 17 L61 17 L66 23 L66 54 L70 58 L26 58 L30 54 L30 23 Z" fill="#F59E0B"></path>
+
+  
+  <path d="M33 24 L47 24 L46 33 L33 33 Z" fill="#16191D"></path>
+  <path d="M49 24 L63 24 L63 33 L50 33 Z" fill="#16191D"></path>
+  <path d="M30 37 L37 37 L36 43 L30 43 Z" fill="#16191D"></path>
+  <path d="M59 37 L66 37 L66 43 L60 43 Z" fill="#16191D"></path>
+  <rect x="38" y="37.5" width="20" height="2.6" fill="#16191D"></rect>
+  <rect x="38" y="41.7" width="20" height="2.6" fill="#16191D"></rect>
+  <rect x="38" y="45.9" width="20" height="2.6" fill="#16191D"></rect>
+  <rect x="30" y="52.5" width="11" height="3.4" fill="#16191D"></rect>
+  <rect x="55" y="52.5" width="11" height="3.4" fill="#16191D"></rect>
+  <rect x="44" y="52" width="8" height="4.4" fill="#16191D"></rect>
+</svg>
