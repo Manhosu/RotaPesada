@@ -761,6 +761,12 @@ p { margin: 0; text-wrap: pretty; }
 .searchscreen .backrow h1 { font: var(--role-title); }
 .searchscreen__field { background: var(--surface-card); }
 .searchscreen__results { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+.searchscreen__section {
+  font: var(--weight-bold) var(--text-xs) var(--font-display);
+  color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: var(--tracking-caps);
+  margin: 4px 2px 2px;
+}
 
 /* ===================== TELA PRINCIPAL ===================== */
 .main__top { padding: 54px 16px 0; display: flex; flex-direction: column; gap: 12px; z-index: 4; }

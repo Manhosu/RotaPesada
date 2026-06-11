@@ -51,6 +51,39 @@ export type Database = {
         }
         Relationships: []
       }
+      trips: {
+        Row: {
+          id: number
+          user_id: string
+          dest_label: string
+          dest_lat: number
+          dest_lng: number
+          distance_m: number | null
+          duration_s: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: never
+          user_id: string
+          dest_label: string
+          dest_lat: number
+          dest_lng: number
+          distance_m?: number | null
+          duration_s?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: never
+          user_id?: string
+          dest_label?: string
+          dest_lat?: number
+          dest_lng?: number
+          distance_m?: number | null
+          duration_s?: number | null
+          created_at?: string
+        }
+        Relationships: []
+      }
       truck_profiles: {
         Row: {
           axles: number
@@ -194,6 +227,8 @@ export type Restriction = Database["public"]["Tables"]["restrictions"]["Row"]
 export type RestrictionInsert = Database["public"]["Tables"]["restrictions"]["Insert"]
 
 export type UserReport = Database["public"]["Tables"]["user_reports"]["Row"]
+
+export type Trip = Database["public"]["Tables"]["trips"]["Row"]
 
 /** Uma linha do retorno da RPC de proximidade (motor de alerta). */
 export type RestricaoProxima =
