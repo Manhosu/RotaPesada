@@ -44,7 +44,7 @@ export function NavScreen({ go, destination }: NavScreenProps) {
 
   const calcular = async (origem: { lat: number; lng: number }) => {
     const rotas = await fetchTruckRoutes(origem, destino); // 1 requisição (alternativas)
-    const escolhida = await escolherRota(rotas, alturaVeiculo);
+    const escolhida = await escolherRota(rotas, alturaVeiculo, origem, destino);
     if (escolhida) {
       setSel(escolhida);
       // Registra a viagem no histórico uma única vez (não em recálculos).
@@ -113,7 +113,11 @@ export function NavScreen({ go, destination }: NavScreenProps) {
           <div className="navbadge">
             {sel.blockers.length === 0 ? (
               <Badge variant="clear" icon={<CircleCheck />}>
-                {sel.alternativaUsada ? "Rota alternativa liberada" : "Rota liberada"}
+                {sel.desvioForcado
+                  ? "Desvio aplicado · liberada"
+                  : sel.alternativaUsada
+                    ? "Rota alternativa liberada"
+                    : "Rota liberada"}
               </Badge>
             ) : (
               <Badge variant="restriction" icon={<TriangleAlert />}>

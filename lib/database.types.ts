@@ -171,6 +171,8 @@ export type Database = {
           street_name: string
           type: string
           value: number
+          longitude: number
+          latitude: number
         }[]
       }
       reportar_perigo: {

@@ -98,3 +98,37 @@ export async function fetchTruckRoute(
   const rotas = await fetchTruckRoutes(origin, destination);
   return rotas[0] ?? null;
 }
+
+/**
+ * Rota passando por um waypoint intermediário (desvio forçado). 1 requisição.
+ * Usada quando todas as alternativas diretas passam por uma restrição.
+ */
+export async function fetchTruckRouteVia(
+  origin: LatLng,
+  waypoint: LatLng,
+  destination: LatLng
+): Promise<TruckRoute | null> {
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+  if (!token) return null;
+
+  const coords =
+    `${origin.lng},${origin.lat};${waypoint.lng},${waypoint.lat};` +
+    `${destination.lng},${destination.lat}`;
+  const url =
+    `https://api.mapbox.com/directions/v5/mapbox/driving/${coords}` +
+    `?alternatives=false&geometries=geojson&overview=full&steps=true&language=pt&access_token=${token}`;
+
+  let res: Response;
+  try {
+    res = await fetch(url);
+  } catch (e) {
+    console.error("Directions(via) fetch falhou:", e);
+    return null;
+  }
+  if (!res.ok) {
+    console.error("Directions(via) HTTP", res.status);
+    return null;
+  }
+  const data = await res.json();
+  return parseRoute(data?.routes?.[0]);
+}
