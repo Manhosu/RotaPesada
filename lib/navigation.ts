@@ -1,6 +1,6 @@
 import type { LatLng } from "@/lib/restrictions";
 
-export type Screen = "home" | "search" | "setup" | "nav" | "vehicle" | "account";
+export type Screen = "home" | "search" | "setup" | "nav" | "vehicle" | "account" | "validar";
 
 export interface RoutePrefs {
   pedagio: boolean;

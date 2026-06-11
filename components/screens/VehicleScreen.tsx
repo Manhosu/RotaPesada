@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, UserCog } from "lucide-react";
+import { ArrowLeft, UserCog, ShieldCheck } from "lucide-react";
 import { StatusBar } from "@/components/app/StatusBar";
 import { IconButton, ListRow } from "@/components/ui";
 import { TruckProfileForm } from "@/components/TruckProfileForm";
@@ -32,6 +32,12 @@ export function VehicleScreen({ go }: ScreenProps) {
 
           <TruckProfileForm onSaved={() => go("home")} />
 
+          <ListRow
+            icon={<ShieldCheck />}
+            title="Validar perigos"
+            subtitle="Confirmar restrições reportadas perto de você"
+            onClick={() => go("validar")}
+          />
           <ListRow
             icon={<UserCog />}
             title="Minha conta"

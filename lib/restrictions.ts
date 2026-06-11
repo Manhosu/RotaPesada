@@ -98,11 +98,19 @@ export type ConfirmResult =
  * Fase 4 (crowdsourcing) — confirma uma restrição pendente reportada por outro
  * motorista. Idempotente por usuário; com 3+ confirmações vira "verificado".
  */
-export async function confirmarRestricao(id: number): Promise<ConfirmResult> {
+export async function confirmarRestricao(id: number, photoUrl?: string): Promise<ConfirmResult> {
   if (!isSupabaseConfigured()) return { ok: false, error: "Supabase não configurado." };
 
   const user = await ensureSession();
   if (!user) return { ok: false, error: "Não foi possível iniciar a sessão." };
+
+  // Com foto: grava o report com a URL (o RPC abaixo não duplica — é idempotente).
+  if (photoUrl) {
+    const { error: insErr } = await supabase
+      .from("user_reports")
+      .insert({ user_id: user.id, restriction_id: id, photo_url: photoUrl });
+    if (insErr) console.error("anexar foto:", insErr.message);
+  }
 
   const { data, error } = await supabase.rpc("confirmar_restricao", { restriction_id: id });
   if (error) return { ok: false, error: error.message };
