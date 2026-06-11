@@ -12,10 +12,11 @@ export interface AccountStatus {
   signedIn: boolean;
   isAnonymous: boolean;
   email: string | null;
+  phone: string | null;
 }
 
 export async function getAccountStatus(): Promise<AccountStatus> {
-  if (!isSupabaseConfigured()) return { signedIn: false, isAnonymous: true, email: null };
+  if (!isSupabaseConfigured()) return { signedIn: false, isAnonymous: true, email: null, phone: null };
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -23,6 +24,7 @@ export async function getAccountStatus(): Promise<AccountStatus> {
     signedIn: !!user,
     isAnonymous: user?.is_anonymous ?? true,
     email: user?.email ?? null,
+    phone: user?.phone ?? null,
   };
 }
 
@@ -51,4 +53,29 @@ export async function promoteAccount(email: string, password: string): Promise<P
 export async function signOut(): Promise<void> {
   if (!isSupabaseConfigured()) return;
   await supabase.auth.signOut();
+}
+
+export type OtpResult = { ok: true } | { ok: false; error: string };
+
+/**
+ * Promoção por TELEFONE (envia código SMS). Requer um provedor de SMS
+ * configurado no Supabase (Auth → Phone) — caso contrário retorna erro claro.
+ */
+export async function enviarCodigoTelefone(phone: string): Promise<OtpResult> {
+  if (!isSupabaseConfigured()) return { ok: false, error: "Supabase não configurado." };
+  if (!/^\+\d{10,15}$/.test(phone)) {
+    return { ok: false, error: "Use o formato internacional, ex.: +5513912345678." };
+  }
+  await ensureSession();
+  const { error } = await supabase.auth.updateUser({ phone });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+/** Confirma o código SMS, concluindo a vinculação do telefone à conta. */
+export async function confirmarCodigoTelefone(phone: string, token: string): Promise<OtpResult> {
+  if (!isSupabaseConfigured()) return { ok: false, error: "Supabase não configurado." };
+  const { error } = await supabase.auth.verifyOtp({ phone, token, type: "phone_change" });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
 }
