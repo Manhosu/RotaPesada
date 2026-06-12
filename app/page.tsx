@@ -9,6 +9,7 @@ import { NavScreen } from "@/components/screens/NavScreen";
 import { VehicleScreen } from "@/components/screens/VehicleScreen";
 import { AccountScreen } from "@/components/screens/AccountScreen";
 import { ValidationScreen } from "@/components/screens/ValidationScreen";
+import { SettingsScreen } from "@/components/screens/SettingsScreen";
 import { DEMO_DESTINO, type Destino, type RoutePrefs, type Screen } from "@/lib/navigation";
 
 /**
@@ -32,6 +33,7 @@ export default function Page() {
       {screen === "vehicle" && <VehicleScreen go={go} />}
       {screen === "account" && <AccountScreen go={go} />}
       {screen === "validar" && <ValidationScreen go={go} />}
+      {screen === "ajustes" && <SettingsScreen go={go} />}
     </PhoneFrame>
   );
 }

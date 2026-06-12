@@ -43,7 +43,16 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className={`${barlow.variable} ${atkinson.variable} ${jetbrains.variable}`}>
-      <body>{children}</body>
+      <body>
+        {/* Aplica a escala de fonte salva antes da pintura (evita flash). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var v=localStorage.getItem('rp-font-scale');if(v){var n=parseFloat(v);if(n>0)document.documentElement.style.setProperty('--font-scale',String(n));}}catch(e){}})();",
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
