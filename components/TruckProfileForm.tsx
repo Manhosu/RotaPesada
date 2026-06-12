@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Ruler, Weight, CircleDot, Truck, Check, TriangleAlert, CircleCheck } from "lucide-react";
+import { Ruler, Weight, CircleDot, Truck, Check, TriangleAlert, CircleCheck, MoveHorizontal, Maximize2 } from "lucide-react";
 import { Alert, Button, Input, ListRow, Switch } from "@/components/ui";
 import { saveTruckProfile, type TruckProfileFormInput } from "@/lib/truckProfiles";
 import type { TruckProfile } from "@/lib/database.types";
@@ -25,6 +25,8 @@ export function TruckProfileForm({ initial, onSaved }: TruckProfileFormProps) {
   const [name, setName] = useState(initial?.name ?? "");
   const [height, setHeight] = useState(initial?.height ?? "4,40");
   const [weight, setWeight] = useState(initial?.weight_pbt ?? "48");
+  const [width, setWidth] = useState(initial?.width ?? "2,60");
+  const [length, setLength] = useState(initial?.length ?? "18,5");
   const [axles, setAxles] = useState(initial?.axles ?? "9");
   const [active, setActive] = useState(initial?.is_active ?? true);
   const [saving, setSaving] = useState(false);
@@ -39,13 +41,15 @@ export function TruckProfileForm({ initial, onSaved }: TruckProfileFormProps) {
       name,
       height,
       weight_pbt: weight,
+      width,
+      length,
       axles,
       is_active: active,
     });
 
     setSaving(false);
     if (result.ok) {
-      setFeedback({ kind: "ok", message: "Veículo salvo. Suas rotas vão considerar estas medidas." });
+      setFeedback({ kind: "ok", message: "Veículo salvo. Suas rotas serão traçadas para este gabarito." });
       onSaved?.(result.profile);
     } else {
       setFeedback({ kind: "error", message: result.error });
@@ -79,6 +83,25 @@ export function TruckProfileForm({ initial, onSaved }: TruckProfileFormProps) {
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
           hint="Peso bruto total"
+        />
+      </div>
+
+      <div className="vform__grid">
+        <Input
+          label="Largura (m)"
+          icon={<MoveHorizontal />}
+          inputMode="decimal"
+          value={width}
+          onChange={(e) => setWidth(e.target.value)}
+          hint="Ex.: 2,60"
+        />
+        <Input
+          label="Comprimento (m)"
+          icon={<Maximize2 />}
+          inputMode="decimal"
+          value={length}
+          onChange={(e) => setLength(e.target.value)}
+          hint="Ex.: 18,5"
         />
       </div>
 

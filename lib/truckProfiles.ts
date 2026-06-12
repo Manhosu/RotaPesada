@@ -24,6 +24,8 @@ export interface TruckProfileFormInput {
   /** Strings cruas do formulário (podem usar vírgula). */
   height: string;
   weight_pbt: string;
+  width: string;
+  length: string;
   axles: string;
   is_active: boolean;
 }
@@ -54,11 +56,15 @@ export async function saveTruckProfile(input: TruckProfileFormInput): Promise<Sa
 
   const height = parseDecimalBR(input.height);
   const weight_pbt = parseDecimalBR(input.weight_pbt);
+  const width = parseDecimalBR(input.width);
+  const length = parseDecimalBR(input.length);
   const axles = parseInt(input.axles, 10);
 
   if (!input.name.trim()) return { ok: false, error: "Informe um nome para o veículo." };
   if (!Number.isFinite(height) || height <= 0) return { ok: false, error: "Altura inválida." };
   if (!Number.isFinite(weight_pbt) || weight_pbt <= 0) return { ok: false, error: "Peso PBT inválido." };
+  if (!Number.isFinite(width) || width <= 0) return { ok: false, error: "Largura inválida." };
+  if (!Number.isFinite(length) || length <= 0) return { ok: false, error: "Comprimento inválido." };
   if (!Number.isInteger(axles) || axles <= 0) return { ok: false, error: "Número de eixos inválido." };
 
   if (input.is_active) {
@@ -72,6 +78,8 @@ export async function saveTruckProfile(input: TruckProfileFormInput): Promise<Sa
       name: input.name.trim(),
       height,
       weight_pbt,
+      width,
+      length,
       axles,
       is_active: input.is_active,
     })

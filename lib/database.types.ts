@@ -91,9 +91,11 @@ export type Database = {
           height: number
           id: string
           is_active: boolean
+          length: number | null
           name: string
           user_id: string
           weight_pbt: number
+          width: number | null
         }
         Insert: {
           axles: number
@@ -101,9 +103,11 @@ export type Database = {
           height: number
           id?: string
           is_active?: boolean
+          length?: number | null
           name: string
           user_id: string
           weight_pbt: number
+          width?: number | null
         }
         Update: {
           axles?: number
@@ -111,9 +115,11 @@ export type Database = {
           height?: number
           id?: string
           is_active?: boolean
+          length?: number | null
           name?: string
           user_id?: string
           weight_pbt?: number
+          width?: number | null
         }
         Relationships: []
       }
@@ -154,6 +160,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      restricoes_evitar_geojson: {
+        Args: {
+          min_lng: number
+          min_lat: number
+          max_lng: number
+          max_lat: number
+          altura_veiculo: number
+          buffer_m?: number
+          limite?: number
+        }
+        Returns: Json
+      }
       confirmar_restricao: {
         Args: { restriction_id: number }
         Returns: { confirmacoes: number; verificada: boolean }[]

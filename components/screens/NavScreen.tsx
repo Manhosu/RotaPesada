@@ -6,8 +6,7 @@ import { MapView } from "@/components/app/MapView";
 import { StatusBar } from "@/components/app/StatusBar";
 import { Alert, Badge, Button, IconButton, Stat } from "@/components/ui";
 import { useTruckNavigation } from "@/lib/hooks/useTruckNavigation";
-import { fetchTruckRoutes } from "@/lib/mapboxRoute";
-import { escolherRota, type RotaEscolhida } from "@/lib/routeSelection";
+import { planejarRota, type PlanoRota } from "@/lib/planRoute";
 import { nextManeuver } from "@/lib/routeProgress";
 import { saveTrip } from "@/lib/trips";
 import { formatDecimalBR } from "@/lib/truckProfiles";
@@ -36,15 +35,15 @@ function fmtETA(durationS: number): string {
  */
 export function NavScreen({ go, destination }: NavScreenProps) {
   const { position, speedKmh, nearestImpeditive, alturaVeiculo } = useTruckNavigation();
-  const [sel, setSel] = useState<RotaEscolhida | null>(null);
+  const [sel, setSel] = useState<PlanoRota | null>(null);
   const [recalcMsg, setRecalcMsg] = useState<string | null>(null);
   const fetchedRef = useRef(false);
   const savedRef = useRef(false);
   const destino = destination ?? DEMO_DESTINO;
 
   const calcular = async (origem: { lat: number; lng: number }) => {
-    const rotas = await fetchTruckRoutes(origem, destino); // 1 requisição (alternativas)
-    const escolhida = await escolherRota(rotas, alturaVeiculo, origem, destino);
+    // Rota já traçada para o gabarito do veículo (ORS) ou fallback Mapbox.
+    const escolhida = await planejarRota(origem, destino);
     if (escolhida) {
       setSel(escolhida);
       // Registra a viagem no histórico uma única vez (não em recálculos).
@@ -113,11 +112,13 @@ export function NavScreen({ go, destination }: NavScreenProps) {
           <div className="navbadge">
             {sel.blockers.length === 0 ? (
               <Badge variant="clear" icon={<CircleCheck />}>
-                {sel.desvioForcado
-                  ? "Desvio aplicado · liberada"
-                  : sel.alternativaUsada
-                    ? "Rota alternativa liberada"
-                    : "Rota liberada"}
+                {sel.engine === "ors"
+                  ? "Rota do caminhão · liberada"
+                  : sel.desvioForcado
+                    ? "Desvio aplicado · liberada"
+                    : sel.alternativaUsada
+                      ? "Rota alternativa liberada"
+                      : "Rota liberada"}
               </Badge>
             ) : (
               <Badge variant="restriction" icon={<TriangleAlert />}>
